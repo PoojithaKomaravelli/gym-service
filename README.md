@@ -11,16 +11,11 @@ The caller's location can optionally be supplied via querystring parameters 'lat
 4. Postman
 
 ## How to run the project
-1.Navigate to the project root folder
-2. RUn the command 'gradlew bootRun'
-3. You should see application starting on 8081 port
+1. Navigate to the project root folder
+2. Run the command 'gradlew bootRun'
+3. You should see application started message
 
-## Test the service locally
-Postman is an application which can be used to test our applications from our machine. For more information on Postman and how to use it,please visit
-<a href="https://learning.postman.com/" target="_blank">Postman</a> .
-Once the SpringBoot Application starts to run successfully,use Postman's GET request to hit the below endpoint to see sample result
 
-http://localhost:8081/api/gym-service/suggestion?date=1623768587000
 
 
 
