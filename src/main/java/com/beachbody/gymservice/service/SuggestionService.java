@@ -4,13 +4,19 @@ package com.beachbody.gymservice.service;
 import com.beachbody.gymservice.repository.WorkoutClass;
 import com.beachbody.gymservice.repository.WorkoutClassRepository;
 import com.beachbody.gymservice.view.Suggestion;
+import com.beachbody.gymservice.view.SuggestionException;
 import com.beachbody.gymservice.view.SuggestionFormatter;
 import com.google.common.primitives.Doubles;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -21,6 +27,8 @@ import java.util.stream.Collectors;
 public class SuggestionService {
 
     private WorkoutClassRepository workoutClassRepository;
+
+    private static Logger logger = LoggerFactory.getLogger(SuggestionService.class);
 
 
     public SuggestionService(WorkoutClassRepository workoutClassRepository) {
@@ -36,6 +44,12 @@ public class SuggestionService {
      * @return List of Suggestions ordered by user's desired time and gym location
      */
     public List<Suggestion> getSuggestions(Double latitude, Double longitude, Long time){
+
+        int dayOfTheWeek = getDayOfTheWeek(time);
+        if(dayOfTheWeek == 6 || dayOfTheWeek == 7){
+            logger.warn("User input is a weekend.Hence cannot process the request");
+            throw new SuggestionException("Weekends are not allowed as input");
+        }
         Set<WorkoutClass> workoutClasses = workoutClassRepository.getWorkoutCLasses();
 
        // removing past time slots
@@ -97,5 +111,14 @@ public class SuggestionService {
     private Long getHoursFromTimestamp(Long time){
         DateTime preferredTime = new DateTime(time, DateTimeZone.UTC);
         return TimeUnit.HOURS.toHours(preferredTime.getHourOfDay());
+    }
+
+    /**
+     * fetch Day of the Week from the given epoch
+     * NOTE: expected epoch is in UTC timezone
+     */
+    private int getDayOfTheWeek(Long time){
+        DateTime preferredTime = new DateTime(time, DateTimeZone.UTC);
+        return preferredTime.getDayOfWeek();
     }
 }
