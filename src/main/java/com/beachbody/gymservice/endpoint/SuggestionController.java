@@ -22,6 +22,13 @@ public class SuggestionController {
         this.suggestionService = suggestionService;
     }
 
+    /**
+     * handles the suggestion request from user
+     * @param date in UTC timezone
+     * @param latitude
+     * @param longitude
+     * @return
+     */
     @GetMapping("")
     public List<Suggestion> getSuggestions(@RequestParam Long date, @RequestParam(required = false) Double latitude, @RequestParam(required = false) Double longitude){
 
